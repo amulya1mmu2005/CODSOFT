@@ -1,0 +1,39 @@
+# Function to calculate grade based on average percentage
+def calculate_grade(percentage):
+    if percentage >= 90:
+        return 'A'
+    elif percentage >= 80:
+        return 'B'
+    elif percentage >= 70:
+        return 'C'
+    elif percentage >= 60:
+        return 'D'
+    elif percentage >= 50:
+        return 'E'
+    else:
+        return 'F'
+
+# Function to calculate total marks, average percentage, and grade
+def calculate_results(marks):
+    total_marks = sum(marks)  # Total marks
+    num_subjects = len(marks)  # Number of subjects
+    average_percentage = total_marks / num_subjects  # Average percentage
+    
+    # Get grade based on average percentage
+    grade = calculate_grade(average_percentage)
+    
+    # Display results
+    print(f"Total Marks: {total_marks}")
+    print(f"Average Percentage: {average_percentage:.2f}%")
+    print(f"Grade: {grade}")
+
+# Input: Take marks from user
+subjects = int(input("Enter number of subjects: "))
+marks = []
+
+for i in range(subjects):
+    mark = float(input(f"Enter marks obtained in subject {i+1} (out of 100): "))
+    marks.append(mark)
+
+# Call function to calculate and display results
+calculate_results(marks)
