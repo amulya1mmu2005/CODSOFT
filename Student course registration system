@@ -1,0 +1,139 @@
+# Class to represent a course
+class Course:
+    def __init__(self, code, title, description, capacity, schedule):
+        self.code = code
+        self.title = title
+        self.description = description
+        self.capacity = capacity
+        self.schedule = schedule
+        self.registered_students = []
+
+    # Check if there is available slot
+    def has_slot(self):
+        return len(self.registered_students) < self.capacity
+
+    # Add a student to the course
+    def register_student(self, student_id):
+        if self.has_slot():
+            self.registered_students.append(student_id)
+            print(f"Student {student_id} has been successfully registered for {self.title}.")
+        else:
+            print(f"Course {self.title} is full. Registration failed.")
+
+    # Remove a student from the course
+    def drop_student(self, student_id):
+        if student_id in self.registered_students:
+            self.registered_students.remove(student_id)
+            print(f"Student {student_id} has been successfully removed from {self.title}.")
+        else:
+            print(f"Student {student_id} is not registered in {self.title}.")
+
+    # Display course details
+    def display_course_info(self):
+        slots_left = self.capacity - len(self.registered_students)
+        print(f"Course Code: {self.code}")
+        print(f"Title: {self.title}")
+        print(f"Description: {self.description}")
+        print(f"Schedule: {self.schedule}")
+        print(f"Available Slots: {slots_left}/{self.capacity}")
+        print("\n")
+
+
+# Class to represent a student
+class Student:
+    def __init__(self, student_id, name):
+        self.student_id = student_id
+        self.name = name
+        self.registered_courses = []
+
+    # Register for a course
+    def register(self, course):
+        if course.has_slot():
+            course.register_student(self.student_id)
+            self.registered_courses.append(course)
+        else:
+            print(f"Cannot register for {course.title}. The course is full.")
+
+    # Drop a course
+    def drop(self, course):
+        if course in self.registered_courses:
+            course.drop_student(self.student_id)
+            self.registered_courses.remove(course)
+        else:
+            print(f"Cannot drop {course.title}. The student is not registered for it.")
+
+    # Display registered courses
+    def display_registered_courses(self):
+        print(f"Student: {self.name} (ID: {self.student_id})")
+        print("Registered Courses:")
+        if self.registered_courses:
+            for course in self.registered_courses:
+                print(f"- {course.title} ({course.code})")
+        else:
+            print("No courses registered.")
+        print("\n")
+
+
+# Database of courses
+class CourseDatabase:
+    def __init__(self):
+        self.courses = {}
+
+    # Add a new course
+    def add_course(self, course):
+        self.courses[course.code] = course
+
+    # List all available courses with details
+    def list_courses(self):
+        print("\nAvailable Courses:")
+        for course in self.courses.values():
+            course.display_course_info()
+
+    # Get a course by its code
+    def get_course(self, code):
+        return self.courses.get(code, None)
+
+
+# Simulating the registration system
+def main():
+    # Create a course database and add courses
+    course_db = CourseDatabase()
+    course_db.add_course(Course("CS101", "Introduction to Programming", "Learn the basics of programming.", 2, "Mon-Wed 10am"))
+    course_db.add_course(Course("MATH200", "Calculus I", "Study of limits, derivatives, and integrals.", 3, "Tue-Thu 2pm"))
+    course_db.add_course(Course("ENG150", "English Literature", "Exploring English literary works.", 2, "Fri 9am"))
+
+    # Create students
+    student1 = Student(1, "Alice")
+    student2 = Student(2, "Bob")
+
+    # List available courses
+    course_db.list_courses()
+
+    # Student registration
+    print("---- Registration ----")
+    student1.register(course_db.get_course("CS101"))
+    student1.register(course_db.get_course("MATH200"))
+
+    student2.register(course_db.get_course("CS101"))  # Should register successfully
+    student2.register(course_db.get_course("CS101"))  # Should fail (course full)
+
+    # List available courses after registration
+    course_db.list_courses()
+
+    # Display registered courses
+    student1.display_registered_courses()
+    student2.display_registered_courses()
+
+    # Student dropping a course
+    print("---- Dropping Courses ----")
+    student1.drop(course_db.get_course("CS101"))
+
+    # List available courses after dropping
+    course_db.list_courses()
+
+    # Display registered courses after dropping
+    student1.display_registered_courses()
+
+
+if __name__ == "__main__":
+    main()
