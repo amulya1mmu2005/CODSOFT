@@ -1,0 +1,79 @@
+import time
+
+# Class to represent the Quiz
+class Quiz:
+    def __init__(self, questions):
+        self.questions = questions  # List of quiz questions
+        self.score = 0              # Store user score
+        self.answers_summary = []   # Store correct/incorrect summary
+
+    # Method to display a question, options, and handle user answer with timer
+    def ask_question(self, question_data):
+        question, options, correct_answer = question_data
+        print(f"\nQuestion: {question}")
+        for i, option in enumerate(options):
+            print(f"{i + 1}. {option}")
+        
+        start_time = time.time()
+        answer = None
+        
+        # Timer logic (e.g., 10 seconds to answer)
+        while time.time() - start_time < 10:
+            try:
+                answer = int(input("\nSelect your answer (1-4): "))
+                if 1 <= answer <= 4:
+                    break
+                else:
+                    print("Invalid option. Please select a valid option (1-4).")
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+        
+        # If user didn't respond within 10 seconds
+        if answer is None:
+            print("Time's up! Moving to the next question.")
+            self.answers_summary.append("Incorrect (Time's Up)")
+            return False
+        
+        # Check if the answer is correct
+        if options[answer - 1] == correct_answer:
+            print("Correct!")
+            self.score += 1
+            self.answers_summary.append("Correct")
+            return True
+        else:
+            print(f"Incorrect! The correct answer was '{correct_answer}'")
+            self.answers_summary.append("Incorrect")
+            return False
+    
+    # Method to start the quiz
+    def start_quiz(self):
+        print("Starting the quiz! You have 10 seconds to answer each question.")
+        for i, question_data in enumerate(self.questions):
+            print(f"\n--- Question {i+1} ---")
+            self.ask_question(question_data)
+        
+        # Display final results after the quiz
+        self.show_results()
+
+    # Method to show final score and result summary
+    def show_results(self):
+        print("\nQuiz completed!")
+        print(f"Your final score is: {self.score}/{len(self.questions)}")
+        print("\nSummary of your answers:")
+        for i, summary in enumerate(self.answers_summary):
+            print(f"Question {i+1}: {summary}")
+
+
+# List of quiz questions, each question is a tuple (question, options, correct answer)
+questions = [
+    ("What is the capital of France?", ["Berlin", "London", "Paris", "Rome"], "Paris"),
+    ("Which planet is known as the Red Planet?", ["Earth", "Mars", "Jupiter", "Saturn"], "Mars"),
+    ("Who wrote 'To Kill a Mockingbird'?", ["Harper Lee", "J.K. Rowling", "Mark Twain", "Jane Austen"], "Harper Lee"),
+    ("What is the largest ocean on Earth?", ["Atlantic", "Indian", "Arctic", "Pacific"], "Pacific"),
+]
+
+# Create a Quiz object with the list of questions
+quiz = Quiz(questions)
+
+# Start the quiz
+quiz.start_quiz()
